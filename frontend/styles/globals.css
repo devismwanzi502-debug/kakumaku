@@ -32,18 +32,135 @@
   }
 }
 
+/* ── Status dots with continuous pulse ─────────────────────────────── */
 .status-dot {
   @apply inline-block w-2.5 h-2.5 rounded-full;
 }
 .status-dot-up {
-  @apply bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)];
+  @apply bg-emerald-400;
+  animation: pulse-dot 2s ease-in-out infinite;
 }
 .status-dot-loss {
-  @apply bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)];
+  @apply bg-red-400;
+  animation: pulse-dot 1s ease-in-out infinite;
 }
 .status-dot-latency {
-  @apply bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.6)];
+  @apply bg-amber-400;
+  animation: pulse-dot 1.5s ease-in-out infinite;
 }
 .status-dot-idle {
   @apply bg-gray-600;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.15); }
+}
+
+/* ── Card entry animation ──────────────────────────────────────────── */
+.card-enter {
+  animation: card-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes card-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+}
+
+/* ── Summary counter roll-in ───────────────────────────────────────── */
+.counter-in {
+  animation: counter-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes counter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+/* ── Anomaly banner slide from top ─────────────────────────────────── */
+.anom-banner {
+  animation: anom-slide 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes anom-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+    max-height: 0;
+  }
+  to {
+    max-height: 80px;
+  }
+}
+
+/* ── Header shimmer underline ──────────────────────────────────────── */
+.header-line {
+  position: relative;
+}
+.header-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 64px;
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #34d399, #818cf8, #fbbf24, #34d399);
+  background-size: 300% 100%;
+  animation: shimmer-bar 3s linear infinite;
+}
+
+@keyframes shimmer-bar {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* ── Live badge dot blink ──────────────────────────────────────────── */
+.live-badge {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+}
+
+/* ── Grid bg subtle pattern ────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── RTT bar micro-animation ───────────────────────────────────────── */
+.rtt-bar {
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Skeleton loading shimmer ──────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Flash animation for value changes */
+.animate-flash {
+  animation: flash-value 0.4s ease-out;
+}
+
+@keyframes flash-value {
+  0% { color: inherit; }
+  50% { color: #34d399; text-shadow: 0 0 8px rgba(52, 211, 153, 0.5); }
+  100% { color: inherit; }
 }
