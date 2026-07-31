@@ -7,7 +7,5 @@ services:
     buildCommand: npm install && npm run build
     startCommand: node api-server/server.mjs
     envVars:
-      - key: PORT
-        value: 10000
       - key: NODE_ENV
         value: production

@@ -170,9 +170,56 @@ app.get('/api/stream', (req, res) => {
 // Static file serving for production (Next.js export)
 // ---------------------------------------------------------------------------
 
+const FALLBACK_HTML = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Network Pulse</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box }
+    body { background: #030712; color: #e5e7eb; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 48px; text-align: center; max-width: 480px }
+    h1 { font-size: 1.75rem; margin-bottom: 8px; color: #f9fafb }
+    p { color: #9ca3af; font-size: 0.9375rem; line-height: 1.6 }
+    .status { display: inline-block; margin-top: 20px; padding: 8px 20px; border-radius: 9999px; font-size: 0.8125rem; font-weight: 600; background: #065f46; color: #6ee7b7; border: 1px solid #059669 }
+    .meta { display: flex; gap: 24px; justify-content: center; margin-top: 24px }
+    .meta div { background: #1f2937; border-radius: 8px; padding: 12px 20px }
+    .meta .label { font-size: 0.6875rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em }
+    .meta .value { font-size: 1.25rem; font-weight: 700; margin-top: 2px }
+    a { color: #818cf8; text-decoration: none }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📡 Network Pulse</h1>
+    <p>Real-time latency &amp; packet loss monitor is online. Connect the Python daemon to start streaming telemetry.</p>
+    <div class="status">Server Online</div>
+    <div class="meta">
+      <div><div class="label">API</div><div class="value"><a href="/api/health">/api/health</a></div></div>
+      <div><div class="label">SSE</div><div class="value"><a href="/api/stream">/api/stream</a></div></div>
+      <div><div class="label" id="targets" style="cursor:pointer">Targets</div><div id="targets-val" class="value">—</div></div>
+    </div>
+  </div>
+  <script>
+    fetch('/api/health').then(r => r.json()).then(d => {
+      if (d.targets && d.targets.length) document.getElementById('targets-val').textContent = d.targets.length
+    }).catch(() => {})
+  </script>
+</body>
+</html>`;
+
 function serveStatic(app) {
   const outDir = join(__dirname, '..', 'out');
-  if (!existsSync(outDir)) return;
+  const hasBuild = existsSync(outDir) && existsSync(join(outDir, 'index.html'));
+
+  if (!hasBuild) {
+    app.get('/', (_req, res) => {
+      res.setHeader('Content-Type', 'text/html');
+      res.send(FALLBACK_HTML);
+    });
+    return;
+  }
 
   const mimeTypes = {
     '.html': 'text/html',
@@ -205,13 +252,10 @@ function serveStatic(app) {
 
   app.use((req, _res, next) => {
     const pathname = new URL(req.url, 'http://localhost').pathname;
-
-    // Don't intercept API/SSE routes
     if (pathname.startsWith('/api/')) return next();
 
     let filePath = join(outDir, pathname);
 
-    // Serve index.html for directory-like requests
     if (!pathname.includes('.')) {
       const htmlPath = join(filePath, 'index.html');
       if (existsSync(htmlPath)) filePath = htmlPath;
