@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev:api": "node api-server/server.mjs",
+    "dev:api": "node api-server/server.js",
     "dev:frontend": "next dev -p 3000",
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
     "build": "next build",
-    "start": "node api-server/server.mjs"
+    "start": "node api-server/server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
