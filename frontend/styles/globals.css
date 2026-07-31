@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100 antialiased;
+  }
+}
+
+@layer components {
+  .badge-ok {
+    @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+  }
+  .badge-warn {
+    @apply bg-amber-500/20 text-amber-400 border border-amber-500/30;
+  }
+  .badge-critical {
+    @apply bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+}
+
+@layer utilities {
+  .glow-green {
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.25);
+  }
+  .glow-red {
+    box-shadow: 0 0 12px rgba(248, 113, 113, 0.25);
+  }
+  .glow-amber {
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+  }
+}
+
+.status-dot {
+  @apply inline-block w-2.5 h-2.5 rounded-full;
+}
+.status-dot-up {
+  @apply bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)];
+}
+.status-dot-loss {
+  @apply bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)];
+}
+.status-dot-latency {
+  @apply bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.6)];
+}
+.status-dot-idle {
+  @apply bg-gray-600;
+}

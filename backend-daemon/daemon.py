@@ -14,8 +14,8 @@ import signal
 import sys
 import time
 from collections import deque
-from dataclasses import dataclass, field
-from typing import NoReturn
+from dataclasses import dataclass
+from typing import Any
 
 import aiohttp
 import icmplib
@@ -266,7 +266,7 @@ class MetricsReporter:
 class Daemon:
     def __init__(self) -> None:
         self._pinger = AsyncPinger()
-        self._windows: dict[str, RollingTelemetryWindow] = {}
+        self._windows: dict[str, RollingTelemetry] = {}
         self._detector = AnomalyDetector(ANOMALY_LOSS_THRESHOLD, ANOMALY_LATENCY_MULT)
         self._session: aiohttp.ClientSession | None = None
         self._reporter: MetricsReporter | None = None
@@ -327,7 +327,7 @@ class Daemon:
 # ---------------------------------------------------------------------------
 
 async def main() -> None:
-    daemon = NetDaemon()
+    daemon = Daemon()
     loop = asyncio.get_running_loop()
     stop_event = asyncio.Event()
 

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: network-monitor-web
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node api-server/server.mjs
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
