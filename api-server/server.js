@@ -265,6 +265,19 @@ function serveStatic() {
 serveStatic();
 
 // ---------------------------------------------------------------------------
+// Catch-all fallback — send fallback HTML for any unmatched route
+// ---------------------------------------------------------------------------
+
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'not found' });
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.status(200).send(FALLBACK_HTML);
+});
+
+// ---------------------------------------------------------------------------
 // Error handler
 // ---------------------------------------------------------------------------
 
